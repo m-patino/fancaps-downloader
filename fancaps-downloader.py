@@ -1,10 +1,13 @@
 import argparse
 import re
+import os
 import urllib.request
 from bs4 import BeautifulSoup
+import concurrent.futures
 
 parser = argparse.ArgumentParser()
 parser.add_argument('url', nargs='?', help='Url to start download')
+parser.add_argument('--output', type=str, default="Downloads", help='Path of folder')
 args = parser.parse_args()
 
 def getUrlType(url):
@@ -113,17 +116,100 @@ def getMoviePicLink(url):
 
     return links
 
+def downloadFile(url, filename):
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(req) as response, open(filename, 'wb') as output:
+        data = response.read()
+        output.write(data)
+
 if args.url:
     type = getUrlType(args.url)
     if type == "season":
         for epUrl in getEpLinks(args.url):
-            for picUrl in getPicLink(epUrl):
-                print(picUrl)
+            print(f"Current URL scrapping: {epUrl}")
+
+            match = re.search(r"https://fancaps.net/.*?/episodeimages.php\?\d+-([^/]+)/([^/]+)", epUrl)
+            if match:
+                subfolder = os.path.join(args.output, match.group(1) + "/" + match.group(2))
+            else:
+                subfolder = args.output
+            
+            if not os.path.exists(subfolder):
+                os.makedirs(subfolder)
+
+            print(f"\t Folder {subfolder} created")
+            
+            picLinks = getMoviePicLink(epUrl)
+            current = 0
+            total = len(picLinks)
+            for picUrl in picLinks:
+                current = current + 1
+                with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+                    filename = os.path.join(subfolder, picUrl.split('/')[-1])
+                    if not os.path.exists(filename):
+                        executor.submit(downloadFile, picUrl, filename)
+                        print(f"\t [{current}/{total}] {picUrl} Downloaded")
+                    else:
+                        print(f"\t [{current}/{total}] {picUrl} already downloaded")
+
+
     elif type == "ep":
-        for picUrl in getPicLink(args.url):
-            print(picUrl)
+        print(f"Current URL scrapping: {args.url}")
+
+        match = re.search(r"https://fancaps.net/.*?/episodeimages.php\?\d+-([^/]+)/([^/]+)", args.url)
+        if match:
+            subfolder = os.path.join(args.output, match.group(1) + "/" + match.group(2))
+        else:
+            subfolder = args.output
+        
+        if not os.path.exists(subfolder):
+            os.makedirs(subfolder)
+
+        print(f"\t Folder {subfolder} created")
+
+        picLinks = getPicLink(args.url)
+        current = 0
+        total = len(picLinks)
+        for picUrl in picLinks:
+            current = current + 1
+            with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+                filename = os.path.join(subfolder, picUrl.split('/')[-1])
+                if not os.path.exists(filename):
+                    executor.submit(downloadFile, picUrl, filename)
+                    print(f"\t [{current}/{total}] {picUrl} Downloaded")
+                else:
+                    print(f"\t [{current}/{total}] {picUrl} already downloaded")
+
+
     elif type == "movie":
-        for picUrl in getMoviePicLink(args.url):
-            print(picUrl)
+        print(f"Current URL scrapping: {args.url}")
+
+        match = re.search(r"https://fancaps.net/movies/MovieImages.php\?name=([^/]+)&", args.url)
+
+
+        if match:
+            subfolder = os.path.join(args.output, match.group(1))
+        else:
+            subfolder = args.output
+        
+        if not os.path.exists(subfolder):
+            os.makedirs(subfolder)
+
+        print(f"\t Folder {subfolder} created")
+
+        picLinks = getMoviePicLink(args.url)
+        current = 0
+        total = len(picLinks)
+        for picUrl in picLinks:
+            current = current + 1
+            with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+                filename = os.path.join(subfolder, picUrl.split('/')[-1])
+                if not os.path.exists(filename):
+                    executor.submit(downloadFile, picUrl, filename)
+                    print(f"\t [{current}/{total}] {picUrl} Downloaded")
+                else:
+                    print(f"\t [{current}/{total}] {picUrl} already downloaded")
+
+
     else:
         print("Invalid url")
