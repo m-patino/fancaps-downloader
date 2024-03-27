@@ -55,9 +55,7 @@ def getPicLink(url):
     epType = match.group(1)
     nextUrl = match.group(2)
 
-    if epType == 'movie':
-        cdn = 'mvcdn'
-    elif epType == 'tv':
+    if epType == 'tv':
         cdn = 'tvcdn'
     else:
         cdn = 'ancdn'
@@ -84,6 +82,37 @@ def getPicLink(url):
     
     return links
 
+def getMoviePicLink(url):
+    links = []
+    currentUrl = url
+    pageNumber = 1
+    alt = None
+
+    match = re.search(r"https://fancaps.net/.*?/(.*)", url)
+    nextUrl = match.group(1)
+
+    while currentUrl:
+        request = urllib.request.Request(currentUrl, headers={'User-Agent': 'Mozilla/5.0'})
+        page = urllib.request.urlopen(request)
+        beautifulSoup = BeautifulSoup(page, "html.parser") 
+
+        for img in beautifulSoup.find_all("img", src=re.compile("^https://moviethumbs.fancaps.net/")):
+            imgSrc = img.get("src")
+            imgAlt = img.get("alt")
+            if not alt:
+                alt = imgAlt
+            if alt == imgAlt:
+                links.append(imgSrc.replace("https://moviethumbs.fancaps.net/", "https://mvcdn.fancaps.net/"))
+        next = nextUrl+f"&page={pageNumber + 1}"
+        nextPage = beautifulSoup.find("a", href=next)
+        if nextPage:
+            pageNumber += 1
+            currentUrl = url + f"&page={pageNumber}"
+        else:
+            currentUrl = None
+
+    return links
+
 if args.url:
     type = getUrlType(args.url)
     if type == "season":
@@ -94,6 +123,7 @@ if args.url:
         for picUrl in getPicLink(args.url):
             print(picUrl)
     elif type == "movie":
-        print(type)
+        for picUrl in getMoviePicLink(args.url):
+            print(picUrl)
     else:
         print("Invalid url")
