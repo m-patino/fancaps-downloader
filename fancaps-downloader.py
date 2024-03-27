@@ -35,6 +35,8 @@ def getEpLinks(url):
         for link in beautifulSoup.find_all("a", href=re.compile("^.*?/episodeimages.php\?")):
             href = link.get('href')
             if href:
+                if not re.match("^https://.*?/episodeimages.php\?", href):
+                    href = 'https://fancaps.net' + link.get('href')
                 match = re.search(r"https://fancaps.net/.*?/episodeimages.php\?\d+-(.*?)/", href)
                 if match:
                     if not name:
@@ -139,7 +141,7 @@ if args.url:
 
             print(f"\t Folder {subfolder} created")
             
-            picLinks = getMoviePicLink(epUrl)
+            picLinks = getPicLink(epUrl)
             current = 0
             total = len(picLinks)
             for picUrl in picLinks:
