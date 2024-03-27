@@ -18,7 +18,7 @@ def getUrlType(url):
     if match:
         return 'movie'
 
-def getSeasonLinks(url):
+def getEpLinks(url):
     links = []
     currentUrl = url
     pageNumber = 1
@@ -45,14 +45,54 @@ def getSeasonLinks(url):
             currentUrl = None  
     return links
 
+def getPicLink(url):
+    links = []
+    currentUrl = url
+    pageNumber = 1
+    alt = None
+
+    match = re.search(r"https://fancaps.net/(.*?)/(.*)", url)
+    epType = match.group(1)
+    nextUrl = match.group(2)
+
+    if epType == 'movie':
+        cdn = 'mvcdn'
+    elif epType == 'tv':
+        cdn = 'tvcdn'
+    else:
+        cdn = 'ancdn'
+
+    while currentUrl:
+        request = urllib.request.Request(currentUrl, headers={'User-Agent': 'Mozilla/5.0'})
+        page = urllib.request.urlopen(request)
+        beautifulSoup = BeautifulSoup(page, "html.parser")  
+
+        for img in beautifulSoup.find_all("img", src=re.compile("^https://"+epType+"thumbs.fancaps.net/")):
+            imgSrc = img.get("src")
+            imgAlt = img.get("alt")
+            if not alt:
+                alt = imgAlt
+            if alt == imgAlt:
+                links.append(imgSrc.replace("https://"+epType+"thumbs.fancaps.net/", "https://"+cdn+".fancaps.net/"))
+        next = nextUrl+f"&page={pageNumber + 1}"
+        nextPage = beautifulSoup.find("a", href=next)
+        if nextPage:
+            pageNumber += 1
+            currentUrl = url + f"&page={pageNumber}"
+        else:
+            currentUrl = None
+    
+    return links
 
 if args.url:
     type = getUrlType(args.url)
     if type == "season":
-        for epUrl in getSeasonLinks(args.url):
-            print(epUrl)
+        for epUrl in getEpLinks(args.url):
+            for picUrl in getPicLink(epUrl):
+                print(picUrl)
     elif type == "ep":
-        print(type)
+        for picUrl in getPicLink(args.url):
+            print(picUrl)
     elif type == "movie":
         print(type)
     else:
