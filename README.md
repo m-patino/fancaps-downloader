@@ -20,14 +20,29 @@ pip install beautifulsoup4
 
 ## Usage <a name = "usage"></a>
 
-```
-python fancaps-downloader.py URL
-```
+### Arguments
+`url`: Url of ressource to download
+
+`--output`: Folder used for download each images
+
+### Url support:
+* `https://fancaps.net/{tv|anime}/showimages.php?...`: Url of season page
+* `https://fancaps.net/{tv|anime}/episodeimages.php?...`: Url of episode page
+* `https://fancaps.net/movies/MovieImages.php?...`: Url of movie page
 
 
+### Usage exemple:
+
+```
+python fancaps-downloader.py --output "Download" URL
+```
+In this exemple we download all pics of URL into Download folder
+ 
 ## TODO List <a name = "todo_list"></a>
-- Anime Support
-- TV Support
-- Movie Support
-- Output folder argument
+- ~~Anime Support~~
+- ~~TV Support~~
+- ~~Movie Support~~
+- ~~Output folder argument~~
 - Input txt file for bulk
+- Optimization
+- Refactor
