@@ -1,7 +1,7 @@
-import urllib.request
-import re
 from bs4 import BeautifulSoup
 from scraper.crawlers import episode_crawler
+import re
+import urllib.request
 
 class SeasonCrawler:
     url = None
@@ -33,12 +33,14 @@ class SeasonCrawler:
                             self.name = match.group(1)
                         if self.name == match.group(1):
                             epLinks.append(href)
-            if beautifulSoup.find("a", title="Next Page"):
+            if beautifulSoup.find("a", text=re.compile(r'Next', re.IGNORECASE), href=lambda href: href and href != "#"):
                 page += 1
                 currentUrl = url + f"&page={page}"
             else:
                 currentUrl = None  
         
+
+        # Crawl each epLinks for get PicLinks
         crawler = episode_crawler.EpisodeCrawler()
         for epLink in epLinks:
             links.extend(crawler.crawl(epLink))
