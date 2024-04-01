@@ -1,21 +1,19 @@
 import re
 from bs4 import BeautifulSoup
 import urllib.request
+import os
 
 class EpisodeCrawler:
-    url = None
-    alt = None
-
     def crawl(self, url):
         picLinks = []
-        self.url = url
-        currentUrl = self.url
+        currentUrl = url
         pageNumber = 1
+        alt = None
 
         # get Episode type for setup  cdn and regex
-        match = re.search(r"https://fancaps.net/(.*?)/(.*)", url)
+        match = re.search(r"https://fancaps.net\/([a-zA-Z]+)\/.*\?\d+-(.*?)/(.*)", url)
         epType = match.group(1)
-        nextUrl = match.group(2)
+        subfolder = os.path.join(match.group(2), match.group(3))
 
         if epType == 'tv':
             cdn = 'tvcdn'
@@ -30,11 +28,11 @@ class EpisodeCrawler:
             for img in beautifulSoup.find_all("img", src=re.compile("^https://"+epType+"thumbs.fancaps.net/")):
                 imgSrc = img.get("src")
                 imgAlt = img.get("alt")
-                if not self.alt:
-                    self.alt = imgAlt
-                if self.alt == imgAlt:
+                if not alt:
+                    alt = imgAlt
+                if alt == imgAlt:
                     picLinks.append(imgSrc.replace("https://"+epType+"thumbs.fancaps.net/", "https://"+cdn+".fancaps.net/"))
-            next = nextUrl+f"&page={pageNumber + 1}"
+            next = url.replace(f'https://fancaps.net/{epType}/','') +f"&page={pageNumber + 1}"
             nextPage = beautifulSoup.find("a", href=next)
             if nextPage:
                 pageNumber += 1
@@ -42,4 +40,7 @@ class EpisodeCrawler:
             else:
                 currentUrl = None
         
-        return picLinks
+        return {
+            'subfolder': subfolder,
+            'links': picLinks
+        }
