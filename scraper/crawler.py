@@ -5,13 +5,11 @@ class Crawler:
     url = None
     urlType = None
 
-    def __init__(self, url):
+    def crawl(self, url):
         self.url = url
 
-    def crawl(self):
         urlSupport = UrlSupport()
         self.urlType = urlSupport.getType(self.url)
-
         if self.urlType == 'season':
             crawler = season_crawler.SeasonCrawler()
         elif self.urlType == 'episode':
@@ -19,6 +17,6 @@ class Crawler:
         elif self.urlType == 'movie':
             crawler = movie_crawler.MovieCrawler()
         else:
-            return None
+            return []
 
-        crawler.toto()
+        return crawler.crawl(self.url)
