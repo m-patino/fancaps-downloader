@@ -9,7 +9,7 @@ class SeasonCrawler:
 
     def crawl(self, url):
         epLinks = []
-        links = []
+        picLinks = []
         self.url = url
         currentUrl = self.url
         page = 1
@@ -43,5 +43,6 @@ class SeasonCrawler:
         # Crawl each epLinks for get PicLinks
         crawler = episode_crawler.EpisodeCrawler()
         for epLink in epLinks:
-            links.extend(crawler.crawl(epLink))
-        return links
+            picLinks.append(crawler.crawl(epLink))
+        
+        return picLinks

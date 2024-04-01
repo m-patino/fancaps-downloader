@@ -3,17 +3,17 @@ from bs4 import BeautifulSoup
 import urllib.request
 
 class MovieCrawler:
-    url = None
-    alt = None
-
     def crawl(self, url):
         picLinks = []
-        self.url = url
-        currentUrl = self.url
+        currentUrl = url
         pageNumber = 1
+        alt = None
 
-        match = re.search(r"https://fancaps.net/(.*?)/(.*)", url)
-        nextUrl = match.group(2)
+        match = re.search(r"https://fancaps.net\/.*\?name=(.*)&", url)
+        subfolder = match.group(1)
+
+
+
 
         while currentUrl:
             request = urllib.request.Request(currentUrl, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'})
@@ -23,11 +23,11 @@ class MovieCrawler:
             for img in beautifulSoup.find_all("img", src=re.compile("^https://moviethumbs.fancaps.net/")):
                 imgSrc = img.get("src")
                 imgAlt = img.get("alt")
-                if not self.alt:
-                    self.alt = imgAlt
-                if self.alt == imgAlt:
+                if not alt:
+                    alt = imgAlt
+                if alt == imgAlt:
                     picLinks.append(imgSrc.replace("https://moviethumbs.fancaps.net/", "https://mvcdn.fancaps.net/"))
-            next = nextUrl+f"&page={pageNumber + 1}"
+            next = url.replace(f'https://fancaps.net/movies/','') +f"&page={pageNumber + 1}"
             nextPage = beautifulSoup.find("a", href=next)
             if nextPage:
                 pageNumber += 1
@@ -35,4 +35,7 @@ class MovieCrawler:
             else:
                 currentUrl = None
         
-        return picLinks
+        return {
+            'subfolder': subfolder,
+            'links': picLinks
+        }
