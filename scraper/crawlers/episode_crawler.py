@@ -23,7 +23,7 @@ class EpisodeCrawler:
             cdn = 'ancdn'
 
         while currentUrl:
-            request = urllib.request.Request(currentUrl, headers={'User-Agent': 'Mozilla/5.0'})
+            request = urllib.request.Request(currentUrl, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'})
             page = urllib.request.urlopen(request)
             beautifulSoup = BeautifulSoup(page, "html.parser")
 
