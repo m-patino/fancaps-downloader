@@ -9,7 +9,7 @@ args = parser.parse_args()
 if __name__ == "__main__":
     crawler = Crawler()
     links = crawler.crawl(args.url)
-    #for link in links:
-    #    print(link)
+    for link in links:
+        print(link)
 
     print(len(links))
