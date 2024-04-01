@@ -1,3 +1,6 @@
 class EpisodeCrawler:
-    def toto(self):
-        print('EpisodeCrawler')
+    url = None
+
+    def crawl(self, url):
+        self.url = url
+        return [url]

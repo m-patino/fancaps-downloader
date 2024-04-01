@@ -7,5 +7,9 @@ parser.add_argument('--output', type=str, default="Downloads", help='Path of fol
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    crawler = Crawler(args.url)
-    links = crawler.crawl()
+    crawler = Crawler()
+    links = crawler.crawl(args.url)
+    for link in links:
+        print(link)
+
+    print(len(links))
