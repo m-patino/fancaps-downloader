@@ -8,7 +8,7 @@ This project it's a simple Python script for download screencaps from https://fa
 
 ### Prerequisites
 
-To run this script you need to have Python 3.x installed and the Beautifulsoup4 library:
+To run this script you need to have Python 3.x installed, the Beautifulsoup4 and tqdm library:
 
 #### python install: 
 https://www.python.org/downloads/
