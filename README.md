@@ -13,9 +13,9 @@ To run this script you need to have Python 3.x installed and the Beautifulsoup4 
 #### python install: 
 https://www.python.org/downloads/
 
-#### Beautifulsoup4 install: 
+#### Beautifulsoup4 and tqdm install: 
 ```
-pip install beautifulsoup4
+pip install beautifulsoup4 tqdm
 ```
 
 ## Usage <a name = "usage"></a>
@@ -45,4 +45,4 @@ In this exemple we download all pics of URL into Download folder
 - ~~Output folder argument~~
 - Input txt file for bulk
 - Optimization
-- Refactor
+- ~~Refactor~~
