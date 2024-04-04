@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from scraper.crawlers import episode_crawler
 import re
 import urllib.request
+from scraper.utils.colors import Colors
 
 class SeasonCrawler:
     url = None
@@ -44,5 +45,6 @@ class SeasonCrawler:
         crawler = episode_crawler.EpisodeCrawler()
         for epLink in epLinks:
             picLinks.append(crawler.crawl(epLink))
+            Colors.print(f"\t{epLink} crawled", Colors.GREEN)
         
         return picLinks

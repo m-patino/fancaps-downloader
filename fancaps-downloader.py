@@ -1,6 +1,7 @@
 import argparse
 from scraper.crawler import Crawler
 from scraper.downloader import Downloader
+from scraper.utils.colors import Colors
 import os
 
 parser = argparse.ArgumentParser()
@@ -16,5 +17,6 @@ if __name__ == "__main__":
     # Download
     downloader = Downloader()
     for item in links:
+        Colors.print(f"Download to {item['subfolder']} started:", Colors.YELLOW)
         path = os.path.join(args.output, item['subfolder'])
         downloader.downloadUrls(path, item['links'])
