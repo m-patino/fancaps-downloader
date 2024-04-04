@@ -4,7 +4,7 @@ from scraper.utils.colors import Colors
 
 class Crawler:
     def crawl(self, url):
-        Colors.print(f"{url} crawling started.",Colors.YELLOW)
+        Colors.print(f"{url} crawling started:",Colors.YELLOW)
 
         urlSupport = UrlSupport()
         urlType = urlSupport.getType(url)
