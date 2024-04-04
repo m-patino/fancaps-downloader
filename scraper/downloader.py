@@ -5,10 +5,10 @@ import requests.exceptions
 import urllib.request
 from tqdm import tqdm
 
-def _download(url, path):
+def _download(url, path, timeout=10):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'})
     filename = os.path.join(path, url.split('/')[-1])
-    with urllib.request.urlopen(req) as response, open(filename, 'wb') as output:
+    with urllib.request.urlopen(req, timeout=timeout) as response, open(filename, 'wb') as output:
         data = response.read()
         output.write(data)
 
