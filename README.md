@@ -1,4 +1,4 @@
-# (WIP) Fancaps Downloader
+# Fancaps Downloader
 
 ## About <a name = "about"></a>
 
@@ -39,10 +39,6 @@ python fancaps-downloader.py --output "Download" URL
 In this exemple we download all pics of URL into Download folder
  
 ## TODO List <a name = "todo_list"></a>
-- ~~Anime Support~~
-- ~~TV Support~~
-- ~~Movie Support~~
-- ~~Output folder argument~~
 - Input txt file for bulk
-- Optimization
-- ~~Refactor~~
+- Add more arguments
+
