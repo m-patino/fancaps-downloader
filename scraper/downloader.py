@@ -1,7 +1,7 @@
 import os
 import threading
 import concurrent.futures
-from urllib.error import HTTPError 
+from urllib.error import HTTPError,URLError  
 from urllib.request import urlopen, Request
 from tqdm import tqdm
 
@@ -13,8 +13,8 @@ def _download(url, path, timeout=10):
         with urlopen(req, timeout=timeout) as response, open(filename, 'wb') as output:
             data = response.read()
             output.write(data)
-    except HTTPError as e:
-        print(f"Error! {e}")
+    except (HTTPError, TimeoutError, URLError) as e:
+        return
 
 class Downloader:
 
