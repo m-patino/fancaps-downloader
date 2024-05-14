@@ -5,9 +5,9 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen, Request
 from tqdm import tqdm
 import time
-from http.client import IncompleteRead  # IncompleteRead例外をインポート
+from http.client import IncompleteRead  # Import IncompleteRead exception
 
-def _download(url, path, timeout=10, attempts=3, delay=0.01):  # attemptsパラメータを追加
+def _download(url, path, timeout=10, attempts=3, delay=0.01):  # Added attempts parameter
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0'})
     filename = os.path.join(path, url.split('/')[-1])
 
@@ -16,19 +16,19 @@ def _download(url, path, timeout=10, attempts=3, delay=0.01):  # attemptsパラ�
             with urlopen(req, timeout=timeout) as response, open(filename, 'wb') as output:
                 data = response.read()
                 output.write(data)
-                break  # ダウンロードに成功したらループを抜ける
+                break  # Exit the loop if download is successful
         except (HTTPError, URLError, IncompleteRead) as e:
-            print(f"ダウンロード中にエラーが発生しました: {e}. 再試行します...({attempt+1}/{attempts})")
-            time.sleep(delay)  # エラー後に少し待ってから再試行
+            print(f"An error occurred during download: {e}. Retrying...({attempt+1}/{attempts})")
+            time.sleep(delay)  # Wait a bit before retrying after error
         except TimeoutError as e:
-            print(f"タイムアウトエラー: {e}. 再試行します...({attempt+1}/{attempts})")
+            print(f"Timeout Error: {e}. Retrying...({attempt+1}/{attempts})")
             time.sleep(delay)
         else:
-            break  # 他の例外がなければループを抜ける
+            break  # Exit the loop if no other exceptions occur
         if attempt == attempts - 1:
-            print(f"エラーによりダウンロードに失敗しました: {url}")
+            print(f"Download failed due to errors: {url}")
 
-    time.sleep(delay)  # ダウンロードの間隔を空ける
+    time.sleep(delay)  # Pause between downloads
 
 class Downloader:
 
@@ -46,9 +46,10 @@ class Downloader:
             with tqdm(total=total) as pbar:
                 futures = []
                 for url in urls:
-                    future = executor.submit(_download, url, path, delay=delay)  # delayを引数として渡す
+                    future = executor.submit(_download, url, path, delay=delay)  # Pass delay as an argument
                     future.add_done_callback(lambda _: update_progress())
                     futures.append(future)
 
                 for future in concurrent.futures.as_completed(futures):
                     future.result()
+
