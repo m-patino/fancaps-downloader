@@ -1,5 +1,17 @@
 # Fancaps Downloader
 
+## About fork
+
+This is a fork from m-patino/fancaps-downloader.
+At present, it is just a slight improvement over the original repository.
+
+Changes:
+- Added overall error handling
+- Added a retry function for errors that occur during crawling and downloading processes to prevent the download from stopping.
+
+__________
+`↓ original repo readme`
+
 ## About <a name = "about"></a>
 
 This project it's a simple Python script for download screencaps from https://fancaps.net.
