@@ -30,7 +30,7 @@ pip install beautifulsoup4 tqdm
 * `https://fancaps.net/{tv|anime}/episodeimages.php?...`: Url of episode page
 * `https://fancaps.net/movies/MovieImages.php?...`: Url of movie page
 
-Warning: Don't forget the `&movieid=XXXX` part in url of movie page.
+Warning: Due to an issue with `&` caractère in args. Use double quote for the URL argument
 
 ### Usage exemple:
 
