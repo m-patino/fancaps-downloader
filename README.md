@@ -42,4 +42,5 @@ In this exemple we download all pics of URL into Download folder
 ## TODO List <a name = "todo_list"></a>
 - Input txt file for bulk
 - Add more arguments
+- Add error handling
 
